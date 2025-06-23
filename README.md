@@ -1,4 +1,4 @@
-# NetWatch HoneyPot - Multi-Protocol Honeypot System
+# HoneyPot - Multi-Protocol Honeypot System
 
 A comprehensive honeypot system that supports both SSH and HTTP protocols to capture and log malicious login attempts and command executions.
 
