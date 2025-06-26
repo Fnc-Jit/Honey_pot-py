@@ -6,24 +6,26 @@ import socket
 import paramiko
 import threading
 import atexit
+import os
 
 #Constansts
 logging_format = logging.Formatter('%(asctime)s - %(message)s',datefmt='%Y-%m-%d %H:%M:%S')
 SSH_BANNER = "SSH-2.0-MySSHServer_2.7.2"
 
-#host_key ='server.key'
+
+# NOW LOAD THE KEY
 host_key = paramiko.RSAKey(filename='server.key')
 
 #loggers & logging file
 funnel_logger=logging.getLogger('Funnel_logger')
 funnel_logger.setLevel(logging.INFO)
-funnel_handler = RotatingFileHandler('audit.log', maxBytes=2000, backupCount=5)
+funnel_handler = RotatingFileHandler('audit.log', maxBytes=10000000, backupCount=5)
 funnel_handler.setFormatter(logging_format)
 funnel_logger.addHandler(funnel_handler)
 
 creds_logger=logging.getLogger('Creds_logger')
 creds_logger.setLevel(logging.INFO)
-creds_handler = RotatingFileHandler('Cmd_audit.log', maxBytes=2000, backupCount=5)
+creds_handler = RotatingFileHandler('Cmd_audit.log', maxBytes=10000000, backupCount=5)  # 10MB instead of 2KB
 creds_handler.setFormatter(logging_format)
 creds_logger.addHandler(creds_handler)
 

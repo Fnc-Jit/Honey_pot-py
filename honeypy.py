@@ -1,6 +1,17 @@
 # Liabary
 
 import argparse
+import os
+import paramiko
+
+# AUTO-GENERATE SSH KEY BEFORE IMPORTING SSH MODULE
+if not os.path.exists('server.key'):
+    print("Generating server.key...")
+    key = paramiko.RSAKey.generate(2048)
+    key.write_private_key_file('server.key')
+    print("server.key generated successfully!")
+
+# NOW IMPORT MODULES (after key is created)
 from ssh_honey import *
 from web_honeypot import *
 
@@ -24,29 +35,30 @@ if __name__ == "__main__":
     try:
         if args.ssh:
             print("[-] Starting SSH honeypot...")
-            honey_pot(args.address, args.username, args.password, args.port)
-
-        if not args.username:
-            username= None
-        if not args.password:
-            password = None    
+            
+            # Set defaults for SSH if not provided
+            username = args.username if args.username else 'root'
+            password = args.password if args.password else 'password'
+            
+            honey_pot(args.address, username, password, args.port)
         
         elif args.http:
             print("[-] Starting HTTP honeypot...")
 
-            if not args.username:
-                username= 'admin'
-            if not args.password:
-                password = 'password'
+            # Set defaults for HTTP if not provided
+            username = args.username if args.username else 'admin'
+            password = args.password if args.password else 'password'
 
             print(f'Port: {args.port}, Username: {username}, Password: {password}')
-            run_web_honey_pot(args.port,args.username, args.password)
+            run_web_honey_pot(args.port, username, password)
 
         else:
             print("Please specify either --ssh or --http to start the respective honeypot.")
 
-    
-    except:
+    except KeyboardInterrupt:
+        print("\n[-] Exiting honeypot...")
+    except Exception as e:
+        print(f"[-] Error: {e}")
         print("[-] Exiting honeypot...")
 
 
