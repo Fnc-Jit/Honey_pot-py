@@ -31,7 +31,7 @@ pip install paramiko flask argparse
 - **socket**: Network communication (built-in)
 - **logging**: Event logging (built-in)
 
-### SSH Key Generation
+### SSH Key Generation ❌ ❌
 
 Generate an SSH server key (required for SSH honeypot) ( ADDED AUTO KEY GEN NOT NEEDED ANYMORE):
 
