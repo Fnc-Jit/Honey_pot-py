@@ -33,7 +33,7 @@ pip install paramiko flask argparse
 
 ### SSH Key Generation
 
-Generate an SSH server key (required for SSH honeypot):
+Generate an SSH server key (required for SSH honeypot) ( ADDED AUTO KEY GEN NOT NEEDED ANYMORE):
 
 ```bash
 ssh-keygen -t rsa -b 2048 -f server.key
@@ -57,11 +57,149 @@ ssh-keygen -t rsa -b 2048 -f server.key
 
 3. **Place wp-admin.html in templates folder**
 
-4. **Generate SSH key**:
-   ```bash
-   ssh-keygen -t rsa -b 2048 -f server.key
-   ```
 
+-------------------------------------------------------------------
+
+
+# 🚀 NetWatch HoneyPot - VPS Deployment Guide
+
+## 📋 Prerequisites
+- Linux VPS (Ubuntu/Debian/CentOS)
+- Root or sudo access
+- Basic terminal knowledge
+
+---
+
+## 🔧 Step 1: Clone the Repository
+
+```bash
+# Clone the honeypot repository
+git clone https://github.com/your-username/netwatch-honeypot.git
+
+# Navigate to project directory
+cd netwatch-honeypot
+```
+
+---
+
+## 🛡️ Step 2: Configure VPS Firewall
+
+### For Ubuntu/Debian (UFW):
+```bash
+# Enable UFW if not already enabled
+sudo ufw enable
+
+# Allow SSH (important - don't lock yourself out!)
+sudo ufw allow 22/tcp
+
+# Allow honeypot ports
+sudo ufw allow 2223/tcp
+sudo ufw allow 8080/tcp
+
+# Check firewall status
+sudo ufw status verbose
+```
+
+### For CentOS/RHEL (firewalld):
+```bash
+# Enable firewalld
+sudo systemctl enable firewalld
+sudo systemctl start firewalld
+
+# Allow honeypot ports
+sudo firewall-cmd --permanent --add-port=2223/tcp
+sudo firewall-cmd --permanent --add-port=8080/tcp
+
+# Reload firewall
+sudo firewall-cmd --reload
+
+# Check firewall status
+sudo firewall-cmd --list-all
+```
+
+### For Cloud Providers (AWS/DigitalOcean/etc):
+```bash
+# Also configure Security Groups/Firewall Rules in your cloud console:
+# - Allow inbound TCP port 2223 (SSH Honeypot)
+# - Allow inbound TCP port 8080 (HTTP Honeypot)
+# - Source: 0.0.0.0/0 (anywhere) for honeypot effectiveness
+```
+
+---
+
+## 🐍 Step 3: Set Up Python Virtual Environment
+
+```bash
+# Update package manager
+sudo apt update && sudo apt upgrade -y  # Ubuntu/Debian
+# sudo yum update -y                    # CentOS/RHEL
+
+# Install Python3 and pip (if not installed)
+sudo apt install python3 python3-pip python3-venv -y  # Ubuntu/Debian
+# sudo yum install python3 python3-pip -y               # CentOS/RHEL
+
+# Create virtual environment
+python3 -m venv honeypot-env
+
+# Verify virtual environment creation
+ls -la honeypot-env/
+```
+
+---
+
+## 🔄 Step 4: Activate Virtual Environment
+
+```bash
+# Activate the virtual environment
+source honeypot-env/bin/activate
+
+# Verify activation (prompt should change)
+which python
+# Should show: /path/to/netwatch-honeypot/honeypot-env/bin/python
+
+# Check Python version
+python --version
+```
+
+---
+
+## 📦 Step 5: Install Required Dependencies
+
+```bash
+# Install required packages
+pip install flask paramiko argparse
+
+# Verify installations
+pip list
+
+# Expected output should include:
+# Flask==2.x.x
+# paramiko==3.x.x
+# argparse==1.x.x (usually built-in)
+
+```
+
+---
+
+## 🚀 Step 6: Launch the Honeypot
+
+### Option A: HTTP Honeypot (WordPress Login Trap)
+```bash
+# Launch HTTP honeypot on all interfaces
+python honeypy.py -a 0.0.0.0 -p 8080 -u admin -pw secret123 -w
+
+```
+
+### Option B: SSH Honeypot (Fake Linux Shell)
+```bash
+# Launch SSH honeypot on all interfaces
+python honeypy.py -a 0.0.0.0 -p 2223 -u root -pw password123 -s
+
+```
+---
+
+
+-------------------------------------------------------------------
 ## 🎯 Usage Methods
 
 ### Method 1: Using Main Controller (honeypy.py)
@@ -123,6 +261,9 @@ if __name__ == "__main__":
 - **Local Only**: Use `127.0.0.1`
 - **Network Accessible**: Use `0.0.0.0`
 - **Specific Interface**: Use specific IP like `192.168.1.100`
+
+### Global Setup
+Import git Repo in Linux Machine
 
 ## 🔧 Adding More SSH Commands
 
